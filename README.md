@@ -1,7 +1,7 @@
 
 
-# The Forum
-The url for the app is  https://theforum.pythonanywhere.com 
+# The Forum 
+The url for the app is  https://theforum.pythonanywhere.com/
 
 Because I am using the free version of Pythonanywhere the server resets after a certain amount of time which
 causes the connection to be lost which results with a 500 error. If that happens just refresh the page and 
