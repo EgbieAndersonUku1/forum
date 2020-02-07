@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}View Thread | Forum {% endblock %}
+
+{% block body %}
+<div class="pageTitle">
+    <em>{{ thread.title }}</em>
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+        <a href="{{ url_for('home_app.home') }}" class="btn btn-default btn-sm">
+            <i class="glyphicon glyphicon-arrow-left"></i> Back to main threads
+        </a>
+    </div>
+</div>
+
+<div class="row pad">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="big">Thread: {{ thread.title | truncate(20) }}</p>
+                    </div>
+                    <div class="col-lg-12">
+                        {{ thread.description }}
+                    </div>
+
+                    <div class="col-lg-12">
+                        <br />  
+                        <i class="glyphicon glyphicon-calendar"></i> 
+                        Post was created on the {{ thread.date_created.strftime('%d %B %Y') }}&nbsp;
+                         <br />
+                        Created by <em>{{ thread.created_by.title() }}</em>
+                        <a href="#_reply"><i class="glyphicon glyphicon-comment"></i> Post Reply</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<h3>Replies ({{ replies.total }}) </h3>
+
+{% for reply in replies.items  %}
+    <div class="panel panel-primary reply" id="r1" style="border-radius: 10px;">
+        <div class="panel-body">
+            <div class="row reply">
+                <div class="col-lg-9">
+                    <div class="reply-msg">
+                        {{ reply.message }}
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="reply-details">
+                        <i class="glyphicon glyphicon-calendar"></i>{{ reply.date_created.strftime('%d %B %Y')}}<br />
+                        <i class="glyphicon glyphicon-user"></i> {{ reply.user.username.title() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endfor %}
+
+{% if current_user.active %}
+<div class="row pad">
+    <div class="col-lg-12 pad">
+        <div class="panel panel-primary">
+
+            <div class="panel-body pad" id="_reply">
+
+                {% from "__formhelpers.html" import render_field %}
+                <form action="{{ url_for('thread_app.new_thread', thread_id=thread.id) }}" method="POST" role="form" id="theForm">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ render_field(form.message, **{"class": "form-control", "rows": "5", "placeholder": "Post reply.."}) }}
+                    </div>
+                
+                    <button type="submit" class="btn btn-primary">
+                        <i class="glyphicon glyphicon-save"></i> Post reply
+                    </button> &nbsp;
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+    <a href="{{ url_for('security.login') }}"><button type="button" class="btn btn-primary">Login</button></a>
+
+{% endif %}
+
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center pagination pagination-lg">
+
+      {% if replies.has_prev %}
+           <li class="page-item disabled">
+               <a class="page-link" href="{{ url_for('thread_app.main_thread', thread_id=thread.id,
+                                  page_number=replies.prev_num) }}" tabindex="-1">Previous</a>
+           </li>
+      {% endif %}
+      {% for page in replies.iter_pages() %}
+            {% if page %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('thread_app.main_thread',
+                                    thread_id=thread.id, page_number=page) }}">{{ page }}</a></li>
+            {% else %}
+                <span class=ellipsis>…</span>
+            {% endif %}
+      {% endfor %}
+
+      {% if replies.has_next %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('thread_app.main_thread', thread_id=thread.id,
+                          page_number=replies.next_num) }}">Next</a></li>
+      {% endif %}
+  </ul>
+</nav>
+
+{% endblock %}
