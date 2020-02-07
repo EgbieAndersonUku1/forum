@@ -3,9 +3,9 @@
 # The Forum 
 The url for the app is  https://theforum.pythonanywhere.com/
 
-Because I am using the free version of Pythonanywhere the server resets after a certain amount of time which
+Because I am using Pythonanywhere the database resets after a certain amount of time inactive which
 causes the connection to be lost which results with a 500 error. If that happens just refresh the page and 
-everything should be normal again.
+everything should be normal again. I fixed the problem so it should not happen but if it does then you know the solution
 
 ## Project description
 This is website allows the user to create a single thread or multiple threads along with a title (maximum 80 characters long)
